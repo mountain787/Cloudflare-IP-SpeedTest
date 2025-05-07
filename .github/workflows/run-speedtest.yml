@@ -1,1 +1,24 @@
-1
+name: Run Cloudflare IP SpeedTest
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.22'
+
+    - name: Build
+      run: go build -v .
+
+    - name: Run SpeedTest
+      run: ./Cloudflare-IP-SpeedTest || go run main.go
