@@ -5,20 +5,30 @@ on:
   push:
 
 jobs:
-  build-and-run:
+  run-ipspeedtest:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.22'
-
-    - name: Build
-      run: go build -v .
+    - name: Make sure the binary is executable
+      run: |
+        chmod +x ./ipspeedtest  # 给可执行文件添加运行权限
 
     - name: Run ipspeedtest
-      run: ./ipspeedtest
+      run: |
+        ./ipspeedtest  # 运行程序，假设会生成 result.csv 或其他文件
+
+    - name: Show generated files
+      run: |
+        ls -la  # 查看当前目录下生成了哪些文件（比如 result.csv）
+
+    - name: Upload Result File
+      if: success() || failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: output-files
+        path: |
+          ./ip.csv  # 假设程序生成的是 result.csv
+          # 可以加更多路径或文件名
