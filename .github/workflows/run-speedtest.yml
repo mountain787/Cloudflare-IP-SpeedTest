@@ -18,7 +18,7 @@ jobs:
 
     - name: Run ipspeedtest
       run: |
-        ./ipspeedtest  # 运行程序，假设会生成 result.csv 或其他文件
+        ./ipspeedtest -file=ip.txt -outfile=ip.csv -port=443 -max=5000 -speedtest=5 -tls=true -url=speed.cloudflare.com/__down?bytes=300000000  # 运行程序，假设会生成 result.csv 或其他文件
 
     - name: Show generated files
       run: |
