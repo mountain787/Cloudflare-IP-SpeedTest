@@ -21,4 +21,4 @@ jobs:
       run: go build -v .
 
     - name: Run SpeedTest
-      run: ./Cloudflare-IP-SpeedTest || go run main.go
+      run: ./SpeedTest
