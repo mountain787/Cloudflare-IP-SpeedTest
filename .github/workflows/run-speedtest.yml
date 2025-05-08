@@ -13,22 +13,28 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Make sure the binary is executable
-      run: |
-        chmod +x ./ipspeedtest  # 给可执行文件添加运行权限
+      run: chmod +x ./ipspeedtest
 
-    - name: Run ipspeedtest
+    - name: Run ipspeedtest with custom parameters
       run: |
-        ./ipspeedtest -file=ip.txt -outfile=ip.csv -port=443 -max=5000 -speedtest=5 -tls=true -url=speed.cloudflare.com/__down?bytes=300000000  # 运行程序，假设会生成 result.csv 或其他文件
+        echo "Running ipspeedtest..."
+        ./ipspeedtest -file=ip.txt -outfile=ip.csv -port=443 -max=5000 -speedtest=5 -tls=true -url=speed.cloudflare.com/__down?bytes=300000000
 
     - name: Show generated files
-      run: |
-        ls -la  # 查看当前目录下生成了哪些文件（比如 result.csv）
+      run: ls -la
 
-    - name: Upload Result File
+    - name: Upload ip.csv File
       if: success() || failure()
       uses: actions/upload-artifact@v4
       with:
-        name: output-files
-        path: |
-          ./ip.csv  # 假设程序生成的是 result.csv
-          # 可以加更多路径或文件名
+        name: ip-results
+        path: ./ip.csv
+        if-no-files-found: warn
+    - name: Commit and Push Updated ip.csv
+      if: success()
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add ip.csv
+        git commit -m "Update ip.csv from CI" || echo "No changes to commit"
+        git push
